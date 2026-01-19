@@ -1,0 +1,25 @@
+{
+  "users": [],
+  "projects": [
+    {
+      "id": "proj_1768831696532_zrei0m",
+      "name": "Tims Test",
+      "createdAt": "2026-01-19T14:08:16.532Z"
+    }
+  ],
+  "mailboxes": [
+    {
+      "id": "mbx_1768833197765_8ooww6",
+      "projectId": "proj_1768831696532_zrei0m",
+      "host": "mail.your-server.de",
+      "port": 993,
+      "user": "mailscraper@viminds.com",
+      "password": "d42wWQ7GxEpkLok8",
+      "tls": true,
+      "pollingIntervalMinutes": 30,
+      "createdAt": "2026-01-19T14:33:17.765Z"
+    }
+  ],
+  "emails": [],
+  "parseResults": []
+}
