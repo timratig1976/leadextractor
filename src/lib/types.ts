@@ -46,6 +46,19 @@ export type EmailClassification = {
   category: "lead_request" | "lead_source" | "normal";
   source: string | null;
   confidence: number;
+  contactEmail?: string | null;
+  contactName?: {
+    firstName: string | null;
+    lastName: string | null;
+  };
+  company?: {
+    name: string | null;
+    domain: string | null;
+    url: string | null;
+    address: string | null;
+  };
+  phones?: string[];
+  requestText?: string | null;
   log?: {
     provider: "openai" | "cerebras";
     model: string;

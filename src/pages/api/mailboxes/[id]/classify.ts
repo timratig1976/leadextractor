@@ -29,8 +29,15 @@ async function classifyEmail(
         "- lead_request (customer asking for a lead)",
         "- lead_source (lead from a source like Immowelt, etc.)",
         "- normal (not a lead)",
-        "Return strict JSON only with fields: category, source, confidence.",
+        "Return strict JSON only with fields:",
+        "category, source, confidence,",
+        "contact_email,",
+        "contact_name { first_name, last_name },",
+        "company { name, domain, url, address },",
+        "phones (array of strings),",
+        "request_text.",
         "If category is lead_source, set source to the provider name. Otherwise source is null.",
+        "If a field is missing, return null (or empty array for phones).",
         "confidence should be a number 0-1.",
         "Email:",
         `From: ${email.sender}`,
@@ -73,7 +80,18 @@ async function classifyEmail(
     completion_tokens?: number;
     total_tokens?: number;
   };
-  const parsed = JSON.parse(message) as ClassificationResult;
+  const parsed = JSON.parse(message) as ClassificationResult & {
+    contact_email?: string | null;
+    contact_name?: { first_name: string | null; last_name: string | null } | null;
+    company?: {
+      name: string | null;
+      domain: string | null;
+      url: string | null;
+      address: string | null;
+    } | null;
+    phones?: string[] | null;
+    request_text?: string | null;
+  };
 
   return { parsed, messages, responseText: message, usage, latencyMs };
 }
@@ -142,6 +160,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         category: parsed.category,
         source: parsed.source ?? null,
         confidence: Number(parsed.confidence) || 0,
+        contactEmail: parsed.contact_email ?? null,
+        contactName: parsed.contact_name
+          ? {
+              firstName: parsed.contact_name.first_name ?? null,
+              lastName: parsed.contact_name.last_name ?? null,
+            }
+          : undefined,
+        company: parsed.company
+          ? {
+              name: parsed.company.name ?? null,
+              domain: parsed.company.domain ?? null,
+              url: parsed.company.url ?? null,
+              address: parsed.company.address ?? null,
+            }
+          : undefined,
+        phones: parsed.phones ?? [],
+        requestText: parsed.request_text ?? null,
         log: {
           provider,
           model,

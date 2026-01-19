@@ -34,6 +34,19 @@ type EmailClassification = {
   category: "lead_request" | "lead_source" | "normal";
   source: string | null;
   confidence: number;
+  contactEmail?: string | null;
+  contactName?: {
+    firstName: string | null;
+    lastName: string | null;
+  };
+  company?: {
+    name: string | null;
+    domain: string | null;
+    url: string | null;
+    address: string | null;
+  };
+  phones?: string[];
+  requestText?: string | null;
   log?: {
     provider: "openai" | "cerebras";
     model: string;
@@ -78,6 +91,7 @@ export default function MailboxDetailPage() {
     maxLatencyMs?: number;
   } | null>(null);
   const [provider, setProvider] = useState<"openai" | "cerebras">("openai");
+  const [clearStatus, setClearStatus] = useState<string>("");
 
   const loadMailbox = async () => {
     if (!mailboxKey) return;
@@ -104,6 +118,19 @@ export default function MailboxDetailPage() {
       setTestStatus(data.message);
     } else {
       setTestStatus(data.error);
+    }
+  };
+
+  const handleClearEmails = async () => {
+    if (!mailboxKey) return;
+    setClearStatus("Clearing emails...");
+    const response = await fetch(`/api/mailboxes/${mailboxKey}/clear`, { method: "POST" });
+    const data = await response.json();
+    if (response.ok) {
+      setClearStatus(`Cleared ${data.cleared} emails.`);
+      await loadMailbox();
+    } else {
+      setClearStatus(data.error ?? "Clear failed.");
     }
   };
 
@@ -234,6 +261,10 @@ export default function MailboxDetailPage() {
                 <button type="button" onClick={handleBulkClassify}>
                   Bulk classify emails
                 </button>
+                <button type="button" className="secondary" onClick={handleClearEmails}>
+                  Clear emails
+                </button>
+                {clearStatus ? <span className="muted">{clearStatus}</span> : null}
                 {bulkStatus ? (
                   <span className="muted">
                     {bulkStatus}
@@ -325,27 +356,35 @@ export default function MailboxDetailPage() {
                               {classification ? (
                                 <div className="detailMeta">
                                   <p>
-                                    <strong>Category:</strong> {classification.category}
+                                    <strong>Contact:</strong>{" "}
+                                    {[classification.contactName?.firstName, classification.contactName?.lastName]
+                                      .filter(Boolean)
+                                      .join(" ") || "—"}
                                   </p>
                                   <p>
-                                    <strong>Source:</strong> {classification.source ?? "—"}
+                                    <strong>Contact Email:</strong> {classification.contactEmail ?? "—"}
                                   </p>
                                   <p>
-                                    <strong>Confidence:</strong>{" "}
-                                    {Math.round(classification.confidence * 100)}%
+                                    <strong>Company:</strong> {classification.company?.name ?? "—"}
                                   </p>
-                                  {usage ? (
-                                    <p>
-                                      <strong>Tokens:</strong> {usage.totalTokens} (prompt {usage.promptTokens},
-                                      output {usage.completionTokens}) · <strong>Cost:</strong> $
-                                      {costUsd?.toFixed(4)}
-                                    </p>
-                                  ) : null}
-                                  {latencyMs ? (
-                                    <p>
-                                      <strong>Latency:</strong> {latencyMs}ms
-                                    </p>
-                                  ) : null}
+                                  <p>
+                                    <strong>Company URL:</strong> {classification.company?.url ?? "—"}
+                                  </p>
+                                  <p>
+                                    <strong>Company Domain:</strong> {classification.company?.domain ?? "—"}
+                                  </p>
+                                  <p>
+                                    <strong>Company Address:</strong> {classification.company?.address ?? "—"}
+                                  </p>
+                                  <p>
+                                    <strong>Phones:</strong>{" "}
+                                    {classification.phones && classification.phones.length > 0
+                                      ? classification.phones.join(", ")
+                                      : "—"}
+                                  </p>
+                                  <p>
+                                    <strong>Request:</strong> {classification.requestText ?? "—"}
+                                  </p>
                                   {classification.log ? (
                                     <button
                                       type="button"

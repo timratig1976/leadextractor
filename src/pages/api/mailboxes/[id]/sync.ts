@@ -57,16 +57,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const receivedAt = message.envelope?.date
           ? new Date(message.envelope.date).toISOString()
           : nowIso();
-        const bodyPreview = message.source
-          ? message.source.toString("utf-8").slice(0, 500)
-          : "";
+        const rawSource = message.source ? message.source.toString("utf-8") : "";
+        const normalized = rawSource.replace(/\r\n/g, "\n");
+        const headerSeparatorIndex = normalized.indexOf("\n\n");
+        let bodyContent = headerSeparatorIndex >= 0
+          ? normalized.slice(headerSeparatorIndex + 2).trim()
+          : normalized.trim();
+        if (!bodyContent) {
+          bodyContent = normalized.trim();
+        }
 
         db.emails.push({
           id: createId("eml"),
           mailboxId,
           sender: from,
           subject,
-          body: bodyPreview,
+          body: bodyContent,
           receivedAt,
         });
         fetched += 1;
