@@ -16,7 +16,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       acc[item.emailId] = item;
       return acc;
     }, {} as Record<string, typeof db.parseResults[number]>);
-    return res.status(200).json({ mailbox, emails, parseResults });
+    const emailIds = new Set(emails.map((item) => item.id));
+    const classifications = db.classifications.reduce((acc, item) => {
+      if (emailIds.has(item.emailId)) {
+        acc[item.emailId] = item;
+      }
+      return acc;
+    }, {} as Record<string, typeof db.classifications[number]>);
+    return res.status(200).json({ mailbox, emails, parseResults, classifications });
   }
 
   if (req.method === "PUT") {

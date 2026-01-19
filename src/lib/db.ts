@@ -11,6 +11,7 @@ const emptyDb: Database = {
   mailboxes: [],
   emails: [],
   parseResults: [],
+  classifications: [],
 };
 
 async function ensureDbFile() {
@@ -25,7 +26,11 @@ async function ensureDbFile() {
 export async function readDb(): Promise<Database> {
   await ensureDbFile();
   const raw = await fs.readFile(dbPath, "utf-8");
-  return JSON.parse(raw) as Database;
+  const db = JSON.parse(raw) as Database;
+  if (!db.classifications) {
+    db.classifications = [];
+  }
+  return db;
 }
 
 export async function writeDb(db: Database): Promise<void> {

@@ -40,10 +40,32 @@ export type ParseResult = {
   createdAt: string;
 };
 
+export type EmailClassification = {
+  id: string;
+  emailId: string;
+  category: "lead_request" | "lead_source" | "normal";
+  source: string | null;
+  confidence: number;
+  log?: {
+    provider: "openai" | "cerebras";
+    model: string;
+    messages: Array<{ role: string; content: string }>;
+    responseText: string;
+    latencyMs?: number;
+    usage?: {
+      promptTokens: number;
+      completionTokens: number;
+      totalTokens: number;
+    };
+  };
+  createdAt: string;
+};
+
 export type Database = {
   users: User[];
   projects: Project[];
   mailboxes: Mailbox[];
   emails: EmailRecord[];
   parseResults: ParseResult[];
+  classifications: EmailClassification[];
 };

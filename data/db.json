@@ -20,6 +20,231 @@
       "createdAt": "2026-01-19T14:33:17.765Z"
     }
   ],
-  "emails": [],
-  "parseResults": []
+  "emails": [
+    {
+      "id": "eml_1768851553962_pae3i2",
+      "mailboxId": "mbx_1768833197765_8ooww6",
+      "sender": "tim.ratig@viminds.de",
+      "subject": "Testemail",
+      "body": "Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid CAmSArNIbmnLegAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 16:07:31 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 16:07:31 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yx1-xb12a.google.com) smtp.remote-ip=2607:f8b0:4864:20::b12a;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds.",
+      "receivedAt": "2026-01-19T15:07:15.000Z"
+    },
+    {
+      "id": "eml_1768854326395_7owi92",
+      "mailboxId": "mbx_1768833197765_8ooww6",
+      "sender": "tim.ratig@viminds.de",
+      "subject": "Anfrage nach 12 qualifizierten Leads für Neubauprojekt",
+      "body": "Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid xl2CBXSSbmnCXgAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 21:22:12 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 21:22:12 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yx1-xb12f.google.com) smtp.remote-ip=2607:f8b0:4864:20::b12f;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds.",
+      "receivedAt": "2026-01-19T20:21:54.000Z"
+    },
+    {
+      "id": "eml_1768854326397_ub812t",
+      "mailboxId": "mbx_1768833197765_8ooww6",
+      "sender": "tim.ratig@viminds.de",
+      "subject": "Immowelt Anfrage - Exposé ID 887233",
+      "body": "Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid QNziHpCSbmnCXgAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 21:22:40 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 21:22:40 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yx1-xb12f.google.com) smtp.remote-ip=2607:f8b0:4864:20::b12f;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds.",
+      "receivedAt": "2026-01-19T20:22:24.000Z"
+    },
+    {
+      "id": "eml_1768854326419_839kpy",
+      "mailboxId": "mbx_1768833197765_8ooww6",
+      "sender": "tim.ratig@viminds.de",
+      "subject": "Neue Kontaktanfrage für Inserat 4512901",
+      "body": "Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid oJqGDK2SbmnCXgAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 21:23:09 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 21:23:09 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yx1-xb136.google.com) smtp.remote-ip=2607:f8b0:4864:20::b136;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds.",
+      "receivedAt": "2026-01-19T20:22:53.000Z"
+    },
+    {
+      "id": "eml_1768854326422_lv4uva",
+      "mailboxId": "mbx_1768833197765_8ooww6",
+      "sender": "tim.ratig@viminds.de",
+      "subject": "Wartungsfenster am Freitag",
+      "body": "Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid UGMaKM6SbmnCXgAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 21:23:42 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 21:23:42 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yx1-xb12a.google.com) smtp.remote-ip=2607:f8b0:4864:20::b12a;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds.",
+      "receivedAt": "2026-01-19T20:23:26.000Z"
+    },
+    {
+      "id": "eml_1768854326422_shfre5",
+      "mailboxId": "mbx_1768833197765_8ooww6",
+      "sender": "tim.ratig@viminds.de",
+      "subject": "Need 20 buyer leads for Q1 campaign",
+      "body": "Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid YGCIAu2SbmnCXgAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 21:24:13 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 21:24:13 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yw1-x1133.google.com) smtp.remote-ip=2607:f8b0:4864:20::1133;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds.",
+      "receivedAt": "2026-01-19T20:23:57.000Z"
+    }
+  ],
+  "parseResults": [],
+  "classifications": [
+    {
+      "id": "classify_1768855242186_hd04zr",
+      "emailId": "eml_1768851553962_pae3i2",
+      "category": "normal",
+      "source": null,
+      "confidence": 0.98,
+      "log": {
+        "provider": "cerebras",
+        "model": "gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a strict JSON API. Output JSON only."
+          },
+          {
+            "role": "user",
+            "content": "Classify this email into one of the categories:\n- lead_request (customer asking for a lead)\n- lead_source (lead from a source like Immowelt, etc.)\n- normal (not a lead)\nReturn strict JSON only with fields: category, source, confidence.\nIf category is lead_source, set source to the provider name. Otherwise source is null.\nconfidence should be a number 0-1.\nEmail:\nFrom: tim.ratig@viminds.de\nSubject: Testemail\nBody: Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid CAmSArNIbmnLegAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 16:07:31 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 16:07:31 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yx1-xb12a.google.com) smtp.remote-ip=2607:f8b0:4864:20::b12a;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds."
+          }
+        ],
+        "responseText": "{\n  \"category\": \"normal\",\n  \"source\": null,\n  \"confidence\": 0.98\n}",
+        "latencyMs": 1012,
+        "usage": {
+          "promptTokens": 373,
+          "completionTokens": 92,
+          "totalTokens": 465
+        }
+      },
+      "createdAt": "2026-01-19T20:40:42.186Z"
+    },
+    {
+      "id": "classify_1768855242565_7qc9h4",
+      "emailId": "eml_1768854326395_7owi92",
+      "category": "lead_request",
+      "source": null,
+      "confidence": 0.97,
+      "log": {
+        "provider": "cerebras",
+        "model": "gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a strict JSON API. Output JSON only."
+          },
+          {
+            "role": "user",
+            "content": "Classify this email into one of the categories:\n- lead_request (customer asking for a lead)\n- lead_source (lead from a source like Immowelt, etc.)\n- normal (not a lead)\nReturn strict JSON only with fields: category, source, confidence.\nIf category is lead_source, set source to the provider name. Otherwise source is null.\nconfidence should be a number 0-1.\nEmail:\nFrom: tim.ratig@viminds.de\nSubject: Anfrage nach 12 qualifizierten Leads für Neubauprojekt\nBody: Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid xl2CBXSSbmnCXgAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 21:22:12 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 21:22:12 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yx1-xb12f.google.com) smtp.remote-ip=2607:f8b0:4864:20::b12f;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds."
+          }
+        ],
+        "responseText": "{\n  \"category\": \"lead_request\",\n  \"source\": null,\n  \"confidence\": 0.97\n}",
+        "latencyMs": 379,
+        "usage": {
+          "promptTokens": 384,
+          "completionTokens": 99,
+          "totalTokens": 483
+        }
+      },
+      "createdAt": "2026-01-19T20:40:42.565Z"
+    },
+    {
+      "id": "classify_1768855243114_fe37r5",
+      "emailId": "eml_1768854326397_ub812t",
+      "category": "lead_source",
+      "source": "Immowelt",
+      "confidence": 0.97,
+      "log": {
+        "provider": "cerebras",
+        "model": "gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a strict JSON API. Output JSON only."
+          },
+          {
+            "role": "user",
+            "content": "Classify this email into one of the categories:\n- lead_request (customer asking for a lead)\n- lead_source (lead from a source like Immowelt, etc.)\n- normal (not a lead)\nReturn strict JSON only with fields: category, source, confidence.\nIf category is lead_source, set source to the provider name. Otherwise source is null.\nconfidence should be a number 0-1.\nEmail:\nFrom: tim.ratig@viminds.de\nSubject: Immowelt Anfrage - Exposé ID 887233\nBody: Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid QNziHpCSbmnCXgAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 21:22:40 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 21:22:40 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yx1-xb12f.google.com) smtp.remote-ip=2607:f8b0:4864:20::b12f;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds."
+          }
+        ],
+        "responseText": "{\n  \"category\": \"lead_source\",\n  \"source\": \"Immowelt\",\n  \"confidence\": 0.97\n}",
+        "latencyMs": 549,
+        "usage": {
+          "promptTokens": 383,
+          "completionTokens": 110,
+          "totalTokens": 493
+        }
+      },
+      "createdAt": "2026-01-19T20:40:43.114Z"
+    },
+    {
+      "id": "classify_1768855243551_2w77rv",
+      "emailId": "eml_1768854326419_839kpy",
+      "category": "lead_request",
+      "source": null,
+      "confidence": 0.95,
+      "log": {
+        "provider": "cerebras",
+        "model": "gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a strict JSON API. Output JSON only."
+          },
+          {
+            "role": "user",
+            "content": "Classify this email into one of the categories:\n- lead_request (customer asking for a lead)\n- lead_source (lead from a source like Immowelt, etc.)\n- normal (not a lead)\nReturn strict JSON only with fields: category, source, confidence.\nIf category is lead_source, set source to the provider name. Otherwise source is null.\nconfidence should be a number 0-1.\nEmail:\nFrom: tim.ratig@viminds.de\nSubject: Neue Kontaktanfrage für Inserat 4512901\nBody: Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid oJqGDK2SbmnCXgAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 21:23:09 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 21:23:09 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yx1-xb136.google.com) smtp.remote-ip=2607:f8b0:4864:20::b136;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds."
+          }
+        ],
+        "responseText": "{\n  \"category\": \"lead_request\",\n  \"source\": null,\n  \"confidence\": 0.95\n}",
+        "latencyMs": 437,
+        "usage": {
+          "promptTokens": 382,
+          "completionTokens": 158,
+          "totalTokens": 540
+        }
+      },
+      "createdAt": "2026-01-19T20:40:43.551Z"
+    },
+    {
+      "id": "classify_1768855243935_pi7bbn",
+      "emailId": "eml_1768854326422_lv4uva",
+      "category": "normal",
+      "source": null,
+      "confidence": 0.97,
+      "log": {
+        "provider": "cerebras",
+        "model": "gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a strict JSON API. Output JSON only."
+          },
+          {
+            "role": "user",
+            "content": "Classify this email into one of the categories:\n- lead_request (customer asking for a lead)\n- lead_source (lead from a source like Immowelt, etc.)\n- normal (not a lead)\nReturn strict JSON only with fields: category, source, confidence.\nIf category is lead_source, set source to the provider name. Otherwise source is null.\nconfidence should be a number 0-1.\nEmail:\nFrom: tim.ratig@viminds.de\nSubject: Wartungsfenster am Freitag\nBody: Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid UGMaKM6SbmnCXgAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 21:23:42 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 21:23:42 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yx1-xb12a.google.com) smtp.remote-ip=2607:f8b0:4864:20::b12a;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds."
+          }
+        ],
+        "responseText": "{\n  \"category\": \"normal\",\n  \"source\": null,\n  \"confidence\": 0.97\n}",
+        "latencyMs": 384,
+        "usage": {
+          "promptTokens": 377,
+          "completionTokens": 93,
+          "totalTokens": 470
+        }
+      },
+      "createdAt": "2026-01-19T20:40:43.935Z"
+    },
+    {
+      "id": "classify_1768855244435_d6bdin",
+      "emailId": "eml_1768854326422_shfre5",
+      "category": "lead_request",
+      "source": null,
+      "confidence": 0.99,
+      "log": {
+        "provider": "cerebras",
+        "model": "gpt-oss-120b",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a strict JSON API. Output JSON only."
+          },
+          {
+            "role": "user",
+            "content": "Classify this email into one of the categories:\n- lead_request (customer asking for a lead)\n- lead_source (lead from a source like Immowelt, etc.)\n- normal (not a lead)\nReturn strict JSON only with fields: category, source, confidence.\nIf category is lead_source, set source to the provider name. Otherwise source is null.\nconfidence should be a number 0-1.\nEmail:\nFrom: tim.ratig@viminds.de\nSubject: Need 20 buyer leads for Q1 campaign\nBody: Return-Path: <tim.ratig@viminds.de>\r\nReceived: from dedi2023.your-server.de\r\n\tby dedi2023.your-server.de with LMTP\r\n\tid YGCIAu2SbmnCXgAA6kvxOA\r\n\t(envelope-from <tim.ratig@viminds.de>); Mon, 19 Jan 2026 21:24:13 +0100\r\nEnvelope-to: mailscraper@viminds.com\r\nDelivery-date: Mon, 19 Jan 2026 21:24:13 +0100\r\nAuthentication-Results: dedi2023.your-server.de;\r\n\tiprev=pass (mail-yw1-x1133.google.com) smtp.remote-ip=2607:f8b0:4864:20::1133;\r\n\tspf=pass smtp.mailfrom=viminds.de;\r\n\tdkim=pass header.d=viminds."
+          }
+        ],
+        "responseText": "{\n  \"category\": \"lead_request\",\n  \"source\": null,\n  \"confidence\": 0.99\n}",
+        "latencyMs": 500,
+        "usage": {
+          "promptTokens": 379,
+          "completionTokens": 115,
+          "totalTokens": 494
+        }
+      },
+      "createdAt": "2026-01-19T20:40:44.435Z"
+    }
+  ]
 }
