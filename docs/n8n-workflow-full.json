@@ -1,0 +1,237 @@
+{
+  "name": "LeadExtractor - Full (Tokens + HubSpot Upsert)",
+  "nodes": [
+    { "id": "CronTrigger", "name": "Cron Trigger", "type": "n8n-nodes-base.cron", "typeVersion": 2, "position": [200, 200], "parameters": { "cronExpression": "*/5 * * * *" } },
+    { "id": "Imap", "name": "IMAP Fetch (UNSEEN)", "type": "n8n-nodes-base.imap", "typeVersion": 2, "position": [400, 200],
+      "credentials": { "imap": { "id": "YOUR_IMAP_CREDENTIAL_ID", "name": "IMAP Account" } },
+      "parameters": { "mailbox": "INBOX", "postProcessAction": "read", "options": { "searchCriteria": "UNSEEN" } }
+    },
+    { "id": "Normalize", "name": "Normalize + Dedupe", "type": "n8n-nodes-base.function", "typeVersion": 2, "position": [620, 200],
+      "parameters": { "functionCode": "const out = []; const seen = new Set();\nfor (const item of $input.all()) {\n  const msg = item.json || {};\n  const messageId = msg.messageId || msg.headers?.['message-id'] || '';\n  if (messageId && seen.has(messageId)) continue; if (messageId) seen.add(messageId);\n  const body = (msg.textHtml || msg.text || '').replace(/\\s+/g, ' ').trim();\n  out.push({ json: { timestamp: new Date().toISOString(), mailbox: msg.to || '', from: msg.from || '', subject: msg.subject || '(no subject)', body, raw_source: msg.text || msg.textHtml || '', message_id: messageId }});\n}\nreturn out;" }
+    },
+    { "id": "StartTimer", "name": "Start Timer", "type": "n8n-nodes-base.set", "typeVersion": 2, "position": [760, 200],
+      "parameters": { "values": { "string": [], "number": [{ "name": "start_ms", "value": "={{Date.now()}}" }] } }
+    },
+    { "id": "Cerebras", "name": "Cerebras Classify", "type": "n8n-nodes-base.httpRequest", "typeVersion": 3, "position": [920, 200],
+      "parameters": {
+        "url": "https://api.cerebras.ai/v1/chat/completions",
+        "method": "POST",
+        "authentication": "headerAuth",
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "Bearer {{$env.CEREBRAS_API_KEY}}" }] },
+        "jsonParameters": true,
+        "options": { "timeout": 30000 },
+        "bodyParametersJson": "{\n  \"model\": \"cerebras/gpt-4o\",\n  \"temperature\": 0.2,\n  \"messages\": [\n    {\"role\":\"system\",\"content\":\"You are an email classifier and CRM extractor. Return ONLY valid JSON. No extra text.\"},\n    {\"role\":\"user\",\"content\":\"Classify and extract CRM info. Output JSON with keys: category (lead_request|lead_source|normal), source (string|null), confidence (0-1), contact_email, contact_name, company_name, company_domain, phone_numbers (array), request_text, reasoning. If email is from known portals (mobile.de, autoscout24, immowelt, immobilienscout24, ebay-kleinanzeigen), set category=lead_source and lead source accordingly.\\n\\nSubject: {{$json[\\\"subject\\\"]}}\\nFrom: {{$json[\\\"from\\\"]}}\\nBody: {{$json[\\\"body\\\"]}}\"}\n  ]\n}"
+      }
+    },
+    { "id": "Parse", "name": "Parse JSON + Usage", "type": "n8n-nodes-base.function", "typeVersion": 2, "position": [1140, 200],
+      "parameters": { "functionCode": "return $input.all().map((item) => {\n  let parsed = {}; const raw = item.json.choices?.[0]?.message?.content || '{}';\n  try { parsed = JSON.parse(raw); } catch { parsed = { category: 'normal', confidence: 0, error: 'parse_error' }; }\n  const usage = item.json.usage || {};\n  const promptTokens = usage.prompt_tokens || 0;\n  const completionTokens = usage.completion_tokens || 0;\n  const totalTokens = usage.total_tokens || (promptTokens + completionTokens);\n  const costUsd = (promptTokens * 0.15 + completionTokens * 0.60) / 1_000_000;\n  const latencyMs = Date.now() - (item.json.start_ms || Date.now());\n\n  return { json: {\n    timestamp: new Date().toISOString(),\n    mailbox: item.json.mailbox || '',\n    from: item.json.from || '',\n    subject: item.json.subject || '(no subject)',\n    body: item.json.body || '',\n    category: parsed.category || 'normal',\n    source: parsed.source || '',\n    confidence: parsed.confidence ?? 0,\n    contact_email: parsed.contact_email || '',\n    contact_name: parsed.contact_name || '',\n    company_name: parsed.company_name || '',\n    company_domain: parsed.company_domain || '',\n    phone_numbers: Array.isArray(parsed.phone_numbers) ? parsed.phone_numbers.join(', ') : '',\n    request_text: parsed.request_text || '',\n    reasoning: parsed.reasoning || '',\n    model: item.json.model || 'cerebras/gpt-4o',\n    provider: 'cerebras',\n    prompt: item.json.messages || '',\n    raw_response: raw,\n    latency_ms: latencyMs,\n    prompt_tokens: promptTokens,\n    completion_tokens: completionTokens,\n    total_tokens: totalTokens,\n    cost_usd: costUsd\n  }};\n});" }
+    },
+    { "id": "SheetsLogs", "name": "Google Sheets - Append Log", "type": "n8n-nodes-base.googleSheets", "typeVersion": 4, "position": [1340, 60],
+      "credentials": { "googleSheetsOAuth2Api": { "id": "YOUR_SHEETS_CREDENTIAL_ID", "name": "Google Sheets OAuth2" } },
+      "parameters": {
+        "authentication": "oAuth2",
+        "sheetId": "YOUR_GOOGLE_SHEET_ID",
+        "range": "logs!A:Z",
+        "valueInputMode": "USER_ENTERED",
+        "fields": [
+          "timestamp","mailbox","from","subject","body","category","source","confidence",
+          "contact_email","contact_name","company_name","company_domain","phone_numbers","request_text",
+          "model","provider","latency_ms","prompt_tokens","completion_tokens","total_tokens","cost_usd",
+          "prompt","raw_response"
+        ]
+      }
+    },
+    {
+      "id": "HubSpotSearchContact",
+      "name": "HubSpot - Search Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1340, 200],
+      "parameters": {
+        "url": "https://api.hubapi.com/crm/v3/objects/contacts/search",
+        "method": "POST",
+        "authentication": "headerAuth",
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "Bearer {{$env.HUBSPOT_PRIVATE_APP_TOKEN}}" }] },
+        "jsonParameters": true,
+        "bodyParametersJson": "{\n  \"filterGroups\": [{\"filters\": [{\"propertyName\": \"email\", \"operator\": \"EQ\", \"value\": \"{{$json.contact_email}}\"}]}],\n  \"properties\": [\"email\", \"firstname\", \"lastname\"],\n  \"limit\": 1\n}"
+      }
+    },
+    {
+      "id": "IfContactExists",
+      "name": "IF Contact Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1540, 200],
+      "parameters": { "conditions": { "number": [{ "value1": "={{$json.total || 0}}", "operation": "larger", "value2": 0 }] } }
+    },
+    {
+      "id": "HubSpotCreateContact",
+      "name": "HubSpot - Create Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1740, 300],
+      "parameters": {
+        "url": "https://api.hubapi.com/crm/v3/objects/contacts",
+        "method": "POST",
+        "authentication": "headerAuth",
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "Bearer {{$env.HUBSPOT_PRIVATE_APP_TOKEN}}" }] },
+        "jsonParameters": true,
+        "bodyParametersJson": "{\n  \"properties\": {\n    \"email\": \"{{$json.contact_email}}\",\n    \"firstname\": \"{{$json.contact_name}}\",\n    \"company\": \"{{$json.company_name}}\",\n    \"phone\": \"{{$json.phone_numbers}}\"\n  }\n}"
+      }
+    },
+    {
+      "id": "ExtractContactId",
+      "name": "Extract Contact ID",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [1740, 120],
+      "parameters": { "functionCode": "const id = $json.results?.[0]?.id || $json.id || '';\nreturn [{ json: { ...$json, contact_id: id } }];" }
+    },
+    {
+      "id": "HubSpotSearchCompany",
+      "name": "HubSpot - Search Company",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1920, 120],
+      "parameters": {
+        "url": "https://api.hubapi.com/crm/v3/objects/companies/search",
+        "method": "POST",
+        "authentication": "headerAuth",
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "Bearer {{$env.HUBSPOT_PRIVATE_APP_TOKEN}}" }] },
+        "jsonParameters": true,
+        "bodyParametersJson": "{\n  \"filterGroups\": [{\"filters\": [{\"propertyName\": \"domain\", \"operator\": \"EQ\", \"value\": \"{{$json.company_domain}}\"}]}],\n  \"properties\": [\"name\", \"domain\"],\n  \"limit\": 1\n}"
+      }
+    },
+    {
+      "id": "IfCompanyExists",
+      "name": "IF Company Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2120, 120],
+      "parameters": { "conditions": { "number": [{ "value1": "={{$json.total || 0}}", "operation": "larger", "value2": 0 }] } }
+    },
+    {
+      "id": "HubSpotCreateCompany",
+      "name": "HubSpot - Create Company",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [2320, 220],
+      "parameters": {
+        "url": "https://api.hubapi.com/crm/v3/objects/companies",
+        "method": "POST",
+        "authentication": "headerAuth",
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "Bearer {{$env.HUBSPOT_PRIVATE_APP_TOKEN}}" }] },
+        "jsonParameters": true,
+        "bodyParametersJson": "{\n  \"properties\": {\n    \"name\": \"{{$json.company_name}}\",\n    \"domain\": \"{{$json.company_domain}}\"\n  }\n}"
+      }
+    },
+    {
+      "id": "ExtractCompanyId",
+      "name": "Extract Company ID",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [2320, 40],
+      "parameters": { "functionCode": "const id = $json.results?.[0]?.id || $json.id || '';\nreturn [{ json: { ...$json, company_id: id } }];" }
+    },
+    {
+      "id": "AssociateContactCompany",
+      "name": "HubSpot - Associate Contact↔Company",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [2520, 120],
+      "parameters": {
+        "url": "https://api.hubapi.com/crm/v4/objects/contacts/{{$json.contact_id}}/associations/companies/{{$json.company_id}}/contact_to_company",
+        "method": "PUT",
+        "authentication": "headerAuth",
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "Bearer {{$env.HUBSPOT_PRIVATE_APP_TOKEN}}" }] }
+      }
+    },
+    {
+      "id": "HubSpotCreateNote",
+      "name": "HubSpot - Create Note",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [2720, 120],
+      "parameters": {
+        "url": "https://api.hubapi.com/crm/v3/objects/notes",
+        "method": "POST",
+        "authentication": "headerAuth",
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "Bearer {{$env.HUBSPOT_PRIVATE_APP_TOKEN}}" }] },
+        "jsonParameters": true,
+        "bodyParametersJson": "{\n  \"properties\": {\n    \"hs_note_body\": \"Subject: {{$json.subject}}\\nFrom: {{$json.from}}\\nCategory: {{$json.category}}\\nSource: {{$json.source}}\\nConfidence: {{$json.confidence}}\\nRequest: {{$json.request_text}}\\n\\nBody: {{$json.body}}\"\n  }\n}"
+      }
+    },
+    {
+      "id": "AssociateNoteContact",
+      "name": "HubSpot - Associate Note↔Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [2920, 120],
+      "parameters": {
+        "url": "https://api.hubapi.com/crm/v4/objects/notes/{{$json.id}}/associations/contacts/{{$json.contact_id}}/note_to_contact",
+        "method": "PUT",
+        "authentication": "headerAuth",
+        "headerParameters": { "parameters": [{ "name": "Authorization", "value": "Bearer {{$env.HUBSPOT_PRIVATE_APP_TOKEN}}" }] }
+      }
+    },
+    {
+      "id": "HubSpotFormPayload",
+      "name": "HubSpot Form Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [1340, 340],
+      "parameters": {
+        "functionCode": "return [{\n  json: {\n    portalId: \"123456\",\n    formId: \"abcd1234-ef56-7890-abcd-1234567890ef\",\n    pageUri: \"https://viminds.de/contact\",\n    pageName: \"LeadExtractor Demo\",\n    fields: [\n      { name: \"email\", value: $json.contact_email || '' },\n      { name: \"firstname\", value: $json.contact_name || '' },\n      { name: \"company\", value: $json.company_name || '' },\n      { name: \"phone\", value: $json.phone_numbers || '' },\n      { name: \"message\", value: $json.request_text || $json.body || '' },\n      { name: \"lead_source\", value: $json.source || '' },\n      { name: \"lead_category\", value: $json.category || '' },\n      { name: \"confidence\", value: String($json.confidence ?? '') }\n    ]\n  }\n}];"
+      }
+    },
+    {
+      "id": "HubSpotFormSubmit",
+      "name": "HubSpot Form Submit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1540, 340],
+      "parameters": {
+        "url": "https://api.hsforms.com/submissions/v3/integration/submit/{{$json.portalId}}/{{$json.formId}}",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "{\n  \"submittedAt\": \"={{Date.now()}}\",\n  \"fields\": {{$json.fields}},\n  \"context\": {\n    \"pageUri\": \"{{$json.pageUri}}\",\n    \"pageName\": \"{{$json.pageName}}\"\n  }\n}"
+      }
+    }
+  ],
+  "connections": {
+    "Cron Trigger": { "main": [[{ "node": "IMAP Fetch (UNSEEN)", "type": "main", "index": 0 }]] },
+    "IMAP Fetch (UNSEEN)": { "main": [[{ "node": "Normalize + Dedupe", "type": "main", "index": 0 }]] },
+    "Normalize + Dedupe": { "main": [[{ "node": "Start Timer", "type": "main", "index": 0 }]] },
+    "Start Timer": { "main": [[{ "node": "Cerebras Classify", "type": "main", "index": 0 }]] },
+    "Cerebras Classify": { "main": [[{ "node": "Parse JSON + Usage", "type": "main", "index": 0 }]] },
+    "Parse JSON + Usage": {
+      "main": [
+        [{ "node": "Google Sheets - Append Log", "type": "main", "index": 0 }],
+        [{ "node": "HubSpot - Search Contact", "type": "main", "index": 0 }],
+        [{ "node": "HubSpot Form Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "HubSpot Form Payload": { "main": [[{ "node": "HubSpot Form Submit", "type": "main", "index": 0 }]] },
+    "HubSpot - Search Contact": { "main": [[{ "node": "IF Contact Exists", "type": "main", "index": 0 }]] },
+    "IF Contact Exists": {
+      "main": [
+        [{ "node": "Extract Contact ID", "type": "main", "index": 0 }],
+        [{ "node": "HubSpot - Create Contact", "type": "main", "index": 0 }]
+      ]
+    },
+    "HubSpot - Create Contact": { "main": [[{ "node": "Extract Contact ID", "type": "main", "index": 0 }]] },
+    "Extract Contact ID": { "main": [[{ "node": "HubSpot - Search Company", "type": "main", "index": 0 }]] },
+    "HubSpot - Search Company": { "main": [[{ "node": "IF Company Exists", "type": "main", "index": 0 }]] },
+    "IF Company Exists": {
+      "main": [
+        [{ "node": "Extract Company ID", "type": "main", "index": 0 }],
+        [{ "node": "HubSpot - Create Company", "type": "main", "index": 0 }]
+      ]
+    },
+    "HubSpot - Create Company": { "main": [[{ "node": "Extract Company ID", "type": "main", "index": 0 }]] },
+    "Extract Company ID": { "main": [[{ "node": "HubSpot - Associate Contact↔Company", "type": "main", "index": 0 }]] },
+    "HubSpot - Associate Contact↔Company": { "main": [[{ "node": "HubSpot - Create Note", "type": "main", "index": 0 }]] },
+    "HubSpot - Create Note": { "main": [[{ "node": "HubSpot - Associate Note↔Contact", "type": "main", "index": 0 }]] }
+  },
+  "active": true
+}

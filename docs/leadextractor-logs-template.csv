@@ -1,0 +1,1 @@
+timestamp,mailbox,from,subject,body,category,source,confidence,contact_email,contact_name,company_name,company_domain,phone_numbers,request_text,model,provider,latency_ms,prompt_tokens,completion_tokens,total_tokens,cost_usd,prompt,raw_response
